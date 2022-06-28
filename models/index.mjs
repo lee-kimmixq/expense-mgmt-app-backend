@@ -2,6 +2,10 @@ import { Sequelize } from "sequelize";
 import url from "url";
 import allConfig from "../config/config.js";
 
+import initUserModel from "./user.mjs";
+import initCategoryModel from "./category.mjs";
+import initTransactionModel from "./transaction.mjs";
+
 const env = process.env.NODE_ENV || "development";
 
 const config = allConfig[env];
@@ -37,6 +41,20 @@ if (env === "production") {
     config
   );
 }
+
+db.User = initUserModel(sequelize, Sequelize.DataTypes);
+db.Category = initCategoryModel(sequelize, Sequelize.DataTypes);
+db.Transaction = initTransactionModel(sequelize, Sequelize.DataTypes);
+
+db.User.hasMany(db.Transaction);
+db.Transaction.belongsTo(db.User);
+
+db.Transaction.belongsToMany(db.Category, {
+  through: "transaction_categories",
+});
+db.Category.belongsToMany(db.Transaction, {
+  through: "transaction_categories",
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
