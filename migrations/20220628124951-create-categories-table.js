@@ -11,7 +11,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      isIncome: {
+      is_income: {
         allowNull: false,
         type: Sequelize.BOOLEAN,
       },
