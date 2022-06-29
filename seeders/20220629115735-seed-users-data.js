@@ -1,4 +1,3 @@
-// import getHash from "../utils/getHash.mjs";
 const getHash = require("../utils/getHash.js");
 
 module.exports = {
