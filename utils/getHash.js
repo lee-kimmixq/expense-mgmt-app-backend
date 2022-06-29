@@ -1,4 +1,7 @@
 const JSSHA = require("jssha");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const getHash = (input) => {
   const shaObj = new JSSHA("SHA-512", "TEXT", { encoding: "UTF8" });
