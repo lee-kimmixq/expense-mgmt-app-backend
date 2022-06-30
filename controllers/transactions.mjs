@@ -19,7 +19,7 @@ export default function initTransactionController(db) {
       const { amount, txnDate, title, categoryId } = req.body;
 
       const category = await db.Category.findByPk(categoryId);
-      if (!category) throw new Error("Invalid Category");
+      if (!category) return res.status(400).send("Bad Request");
 
       const newTxn = await category.createTransaction({
         userId: id,
