@@ -4,6 +4,7 @@ import passport from "passport";
 
 import initTestController from "./controllers/testController.mjs"; // TEST - TO REMOVE
 import initUserController from "./controllers/users.mjs";
+import initTransactionController from "./controllers/transactions.mjs";
 
 export default function routes(app) {
   // TEST - TO REMOVE
@@ -14,6 +15,13 @@ export default function routes(app) {
   app.post("/login", UserController.login);
   app.post("/signup", UserController.signup);
   app.delete("/logout", UserController.logout);
+
+  const TransactionController = initTransactionController(db);
+  app.get(
+    "/transactions",
+    passport.authenticate("jwt", { session: false }),
+    TransactionController.index
+  );
 
   // test protected route
   app.get(
