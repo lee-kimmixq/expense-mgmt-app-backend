@@ -44,8 +44,14 @@ export default function initUserController(db) {
     }
   };
 
+  const logout = async (_, res) => {
+    res.clearCookie("jwt");
+    res.send({ logout: true });
+  };
+
   return {
     login,
     signup,
+    logout,
   };
 }
