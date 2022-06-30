@@ -78,5 +78,23 @@ export default function initTransactionController(db) {
     }
   };
 
-  return { index, create, show, update };
+  const destroy = async (req, res) => {
+    try {
+      const { id: userId } = req.user;
+      const { id: txnId } = req.params;
+
+      const txn = await db.Transaction.findByPk(txnId);
+      if (!txn) return res.status(400).send("Bad Request");
+      if (userId !== txn.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
+
+      await txn.setCategories([]);
+      await txn.destroy();
+
+      res.send({ success: true });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, show, update, destroy };
 }
