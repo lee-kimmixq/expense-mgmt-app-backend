@@ -32,6 +32,11 @@ export default function routes(app) {
     passport.authenticate("jwt", { session: false }),
     TransactionController.show
   );
+  app.put(
+    "/transactions/:id",
+    passport.authenticate("jwt", { session: false }),
+    TransactionController.update
+  );
 
   // test protected route
   app.get(
