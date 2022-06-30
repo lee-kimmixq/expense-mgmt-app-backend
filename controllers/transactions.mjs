@@ -30,21 +30,13 @@ export default function initTransactionController(db) {
           }; // if "category" was removed, add include clause into options
       }
 
-      if (sort) {
-        options.order = [sort.split(":")];
-      }
+      if (sort) options.order = [sort.split(":")];
 
-      if (limit) {
-        options.limit = limit;
-      }
+      if (limit) options.limit = limit;
 
-      if (txnDateMax) {
-        options.where.txnDate = { [Op.lt]: txnDateMax };
-      }
+      if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
 
-      if (txnDateMin) {
-        options.where.txnDate = { [Op.gt]: txnDateMin };
-      }
+      if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
 
       const transactions = await db.Transaction.findAll(options);
 
