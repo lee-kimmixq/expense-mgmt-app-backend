@@ -21,7 +21,9 @@ export default function initUserController(db) {
       let payload = { id: user.id };
       let token = jwt.sign(payload, process.env.JWT_TOKEN_KEY);
 
-      res.cookie("jwt", token);
+      res.cookie("jwt", token, {
+        httpOnly: true,
+      });
       res.send({ login: true });
     } catch (err) {
       res.status(500).send(err);
