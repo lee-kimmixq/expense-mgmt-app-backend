@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import db from "./models/index.mjs";
-import passport from "passport";
+import auth from "./middleware/auth.js";
 
 import initUserController from "./controllers/users.mjs";
 import initTransactionController from "./controllers/transactions.mjs";
@@ -12,31 +12,11 @@ export default function routes(app) {
   app.delete("/logout", UserController.logout);
 
   const TransactionController = initTransactionController(db);
-  app.get(
-    "/transactions",
-    passport.authenticate("jwt", { session: false }),
-    TransactionController.index
-  );
-  app.post(
-    "/transactions",
-    passport.authenticate("jwt", { session: false }),
-    TransactionController.create
-  );
-  app.get(
-    "/transactions/:id",
-    passport.authenticate("jwt", { session: false }),
-    TransactionController.show
-  );
-  app.put(
-    "/transactions/:id",
-    passport.authenticate("jwt", { session: false }),
-    TransactionController.update
-  );
-  app.delete(
-    "/transactions/:id",
-    passport.authenticate("jwt", { session: false }),
-    TransactionController.destroy
-  );
+  app.get("/transactions", auth(), TransactionController.index);
+  app.post("/transactions", auth(), TransactionController.create);
+  app.get("/transactions/:id", auth(), TransactionController.show);
+  app.put("/transactions/:id", auth(), TransactionController.update);
+  app.delete("/transactions/:id", auth(), TransactionController.destroy);
 
   // special JS page. Include the webpack index.html file
   app.get("/home", (request, response) => {
