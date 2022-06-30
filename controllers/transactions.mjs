@@ -1,8 +1,10 @@
+import { Op } from "sequelize";
+
 export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
-      const { fields, sort, limit } = req.query;
+      const { fields, sort, limit, txnDateMin, txnDateMax } = req.query;
 
       // default options
       const options = {
@@ -34,6 +36,14 @@ export default function initTransactionController(db) {
 
       if (limit) {
         options.limit = limit;
+      }
+
+      if (txnDateMax) {
+        options.where.txnDate = { [Op.lt]: txnDateMax };
+      }
+
+      if (txnDateMin) {
+        options.where.txnDate = { [Op.gt]: txnDateMin };
       }
 
       const transactions = await db.Transaction.findAll(options);
