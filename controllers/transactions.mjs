@@ -44,7 +44,7 @@ export default function initTransactionController(db) {
           model: db.Category,
         },
       });
-
+      if (!txn) return res.status(400).send("Bad Request");
       if (userId !== txn.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
 
       res.send(txn);
