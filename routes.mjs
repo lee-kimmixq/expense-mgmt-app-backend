@@ -13,6 +13,7 @@ export default function routes(app) {
   const UserController = initUserController(db);
   app.post("/login", UserController.login);
   app.post("/signup", UserController.signup);
+  app.delete("/logout", UserController.logout);
 
   // test protected route
   app.get(
