@@ -17,14 +17,16 @@ export default function initTransactionController(db) {
         ],
       };
 
-      const attributes = fields.filter((field) => field !== "category"); // remove "category" from fields
-      if (attributes.length > 0) options.attributes = attributes; // if there are attributes, replace default attributes with specified attributes
-      if (attributes.length !== fields.length)
-        options.include = {
-          model: db.Category,
-          attributes: ["id", "name", "isIncome"],
-          through: { attributes: [] },
-        }; // if "category" was removed, add include clause into options
+      if (fields) {
+        const attributes = fields.filter((field) => field !== "category"); // remove "category" from fields
+        if (attributes.length > 0) options.attributes = attributes; // if there are attributes, replace default attributes with specified attributes
+        if (attributes.length !== fields.length)
+          options.include = {
+            model: db.Category,
+            attributes: ["id", "name", "isIncome"],
+            through: { attributes: [] },
+          }; // if "category" was removed, add include clause into options
+      }
 
       const transactions = await db.Transaction.findAll(options);
 
