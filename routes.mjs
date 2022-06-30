@@ -1,26 +1,22 @@
 import { resolve } from "path";
 import db from "./models/index.mjs";
-import passport from "passport";
+import auth from "./middleware/auth.js";
 
-import initTestController from "./controllers/testController.mjs"; // TEST - TO REMOVE
 import initUserController from "./controllers/users.mjs";
+import initTransactionController from "./controllers/transactions.mjs";
 
 export default function routes(app) {
-  // TEST - TO REMOVE
-  const TestController = initTestController(db);
-  app.get("/test", TestController.test);
-
   const UserController = initUserController(db);
   app.post("/login", UserController.login);
   app.post("/signup", UserController.signup);
   app.delete("/logout", UserController.logout);
 
-  // test protected route
-  app.get(
-    "/protected",
-    passport.authenticate("jwt", { session: false }),
-    TestController.test
-  );
+  const TransactionController = initTransactionController(db);
+  app.get("/transactions", auth(), TransactionController.index);
+  app.post("/transactions", auth(), TransactionController.create);
+  app.get("/transactions/:id", auth(), TransactionController.show);
+  app.put("/transactions/:id", auth(), TransactionController.update);
+  app.delete("/transactions/:id", auth(), TransactionController.destroy);
 
   // special JS page. Include the webpack index.html file
   app.get("/home", (request, response) => {
