@@ -34,5 +34,24 @@ export default function initTransactionController(db) {
     }
   };
 
-  return { index, create };
+  const show = async (req, res) => {
+    try {
+      const { id: userId } = req.user;
+      const { id } = req.params;
+
+      const txn = await db.Transaction.findByPk(id, {
+        include: {
+          model: db.Category,
+        },
+      });
+
+      if (userId !== txn.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
+
+      res.send(txn);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, show };
 }
