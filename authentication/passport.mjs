@@ -1,11 +1,11 @@
 import passport from "passport";
-import { ExtractJwt } from "passport-jwt";
 import { Strategy } from "passport-jwt";
+import extractCookie from "../utils/extractCookie.js";
 
 import db from "../models/index.mjs";
 
 let jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: extractCookie,
   secretOrKey: process.env.JWT_TOKEN_KEY,
 };
 
