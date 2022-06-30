@@ -5,6 +5,7 @@ export default function initTransactionController(db) {
 
       const transactions = await db.Transaction.findAll({
         where: { userId: id },
+        include: { model: db.Category },
       });
 
       res.json({ transactions });
