@@ -1,7 +1,6 @@
 import passport from "passport";
 import { Strategy } from "passport-jwt";
 import extractCookie from "../utils/extractCookie.js";
-
 import db from "../models/index.mjs";
 
 let jwtOptions = {
@@ -11,8 +10,6 @@ let jwtOptions = {
 
 passport.use(
   new Strategy(jwtOptions, async (jwt_payload, next) => {
-    console.log("payload received", jwt_payload);
-
     const user = await db.User.findOne({ where: { id: jwt_payload.id } });
 
     if (user) {
