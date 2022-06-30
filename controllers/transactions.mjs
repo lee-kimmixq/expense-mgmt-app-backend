@@ -2,7 +2,7 @@ export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
-      const { fields } = req.query;
+      const { fields, sort } = req.query;
 
       // default options
       const options = {
@@ -26,6 +26,10 @@ export default function initTransactionController(db) {
             attributes: ["id", "name", "isIncome"],
             through: { attributes: [] },
           }; // if "category" was removed, add include clause into options
+      }
+
+      if (sort) {
+        options.order = [sort.split(":")];
       }
 
       const transactions = await db.Transaction.findAll(options);
