@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 export default function initUserController(db) {
   const login = async (req, res) => {
     try {
-      // console.log(req);
       const { email, password } = req.body;
       const user = await db.User.findOne({ where: { email } });
 
