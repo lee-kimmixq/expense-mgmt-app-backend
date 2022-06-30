@@ -1,11 +1,44 @@
+import { Op } from "sequelize";
+
 export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
+      const { fields, sort, limit, txnDateMin, txnDateMax } = req.query;
 
-      const transactions = await db.Transaction.findAll({
+      // default options
+      const options = {
         where: { userId: id },
-      });
+        attributes: [
+          "id",
+          "title",
+          "amount",
+          "txnDate",
+          "createdAt",
+          "updatedAt",
+        ],
+      };
+
+      if (fields) {
+        const attributes = fields.filter((field) => field !== "category"); // remove "category" from fields
+        if (attributes.length > 0) options.attributes = attributes; // if there are attributes, replace default attributes with specified attributes
+        if (attributes.length !== fields.length)
+          options.include = {
+            model: db.Category,
+            attributes: ["id", "name", "isIncome"],
+            through: { attributes: [] },
+          }; // if "category" was removed, add include clause into options
+      }
+
+      if (sort) options.order = [sort.split(":")];
+
+      if (limit) options.limit = limit;
+
+      if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
+
+      if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+
+      const transactions = await db.Transaction.findAll(options);
 
       res.json({ transactions });
     } catch (err) {
