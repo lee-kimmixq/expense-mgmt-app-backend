@@ -7,7 +7,7 @@ export default function initTransactionController(db) {
         where: { userId: id },
       });
 
-      res.send({ transactions });
+      res.json({ transactions });
     } catch (err) {
       res.status(500).send(err);
     }
@@ -28,7 +28,7 @@ export default function initTransactionController(db) {
         title,
       });
 
-      res.send({ newTxn });
+      res.json({ newTxn });
     } catch (err) {
       res.status(500).send(err);
     }
@@ -47,7 +47,7 @@ export default function initTransactionController(db) {
       if (!txn) return res.status(400).send("Bad Request");
       if (userId !== txn.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
 
-      res.send(txn);
+      res.json(txn);
     } catch (err) {
       res.status(500).send(err);
     }
@@ -72,7 +72,7 @@ export default function initTransactionController(db) {
         updatedAt: new Date(),
       });
 
-      res.send({ success: true });
+      res.json({ success: true });
     } catch (err) {
       res.status(500).send(err);
     }
@@ -90,7 +90,7 @@ export default function initTransactionController(db) {
       await txn.setCategories([]);
       await txn.destroy();
 
-      res.send({ success: true });
+      res.json({ success: true });
     } catch (err) {
       res.status(500).send(err);
     }
