@@ -1,4 +1,5 @@
 import getHash from "../utils/getHash.js";
+import jwt from "jsonwebtoken";
 
 export default function initUserController(db) {
   const login = async (req, res) => {
@@ -17,7 +18,10 @@ export default function initUserController(db) {
         return;
       }
 
-      res.send({ login: true });
+      let payload = { id: user.id };
+      let token = jwt.sign(payload, process.env.JWT_TOKEN_KEY);
+
+      res.send({ login: true, token });
     } catch (err) {
       res.status(500).send(err);
     }
