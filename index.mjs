@@ -4,6 +4,8 @@ import express from "express";
 import methodOverride from "method-override";
 import bindRoutes from "./routes.mjs";
 import cors from "cors";
+import passport from "passport";
+import {} from "./authentication/passport.mjs";
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
@@ -30,6 +32,8 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 // Expose the files stored in the public folder
 app.use(express.static("public"));
+
+app.use(passport.initialize());
 
 // Bind route definitions to the Express application
 bindRoutes(app);

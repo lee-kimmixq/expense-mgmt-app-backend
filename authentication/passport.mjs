@@ -1,0 +1,24 @@
+import passport from "passport";
+import { ExtractJwt } from "passport-jwt";
+import { Strategy } from "passport-jwt";
+
+import db from "../models/index.mjs";
+
+let jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_TOKEN_KEY,
+};
+
+passport.use(
+  new Strategy(jwtOptions, async (jwt_payload, next) => {
+    console.log("payload received", jwt_payload);
+
+    const user = await db.User.findOne({ where: { id: jwt_payload.id } });
+
+    if (user) {
+      next(null, user);
+    } else {
+      next(null, false);
+    }
+  })
+);
