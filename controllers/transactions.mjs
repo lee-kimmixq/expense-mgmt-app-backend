@@ -2,7 +2,7 @@ export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
-      const { fields, sort } = req.query;
+      const { fields, sort, limit } = req.query;
 
       // default options
       const options = {
@@ -30,6 +30,10 @@ export default function initTransactionController(db) {
 
       if (sort) {
         options.order = [sort.split(":")];
+      }
+
+      if (limit) {
+        options.limit = limit;
       }
 
       const transactions = await db.Transaction.findAll(options);
