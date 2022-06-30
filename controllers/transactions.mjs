@@ -4,7 +4,8 @@ export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
-      const { fields, sort, limit, txnDateMin, txnDateMax } = req.query;
+      const { fields, sort, limit, txnDateMin, txnDateMax, isIncome } =
+        req.query;
 
       // default options
       const options = {
@@ -37,6 +38,8 @@ export default function initTransactionController(db) {
       if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
 
       if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+
+      if (isIncome !== null) options.include.where = { isIncome };
 
       const transactions = await db.Transaction.findAll(options);
 
