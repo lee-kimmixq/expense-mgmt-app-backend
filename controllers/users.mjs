@@ -17,12 +17,11 @@ export default function initUserController(db) {
         return;
       }
 
-      let payload = { id: user.id };
-      let token = jwt.sign(payload, process.env.JWT_TOKEN_KEY);
+      const payload = { id: user.id };
+      const token = jwt.sign(payload, process.env.JWT_TOKEN_KEY);
+      const cookieOptions = { httpOnly: true };
 
-      res.cookie("jwt", token, {
-        httpOnly: true,
-      });
+      res.cookie("jwt", token, cookieOptions);
       res.send({ login: true });
     } catch (err) {
       res.status(500).send(err);
