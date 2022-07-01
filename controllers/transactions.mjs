@@ -39,7 +39,9 @@ export default function initTransactionController(db) {
 
       if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
 
-      if (isIncome !== null) options.include.where = { isIncome };
+      if (isIncome !== undefined) options.include.where = { isIncome };
+
+      console.log(options);
 
       const transactions = await db.Transaction.findAll(options);
 
@@ -132,5 +134,61 @@ export default function initTransactionController(db) {
     }
   };
 
-  return { index, create, show, update, destroy };
+  const calcTotal = async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { txnDateMin, txnDateMax, categoryBreakdown } = req.query;
+
+      const options = {
+        where: { userId: id },
+        attributes: ["amount", "txnDate"],
+        include: {
+          model: db.Category,
+          attributes: ["id", "name", "isIncome"],
+          through: { attributes: [] },
+        },
+      };
+
+      if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
+
+      if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+
+      const transactions = await db.Transaction.findAll(options);
+
+      const totalAmount = transactions
+        .reduce(
+          (sum, txn) =>
+            Number(sum) +
+            Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1),
+          0
+        )
+        .toFixed(2);
+
+      const resBody = { totalAmount };
+
+      if (categoryBreakdown) {
+        const totalAmountByCategory = {};
+        transactions.forEach((txn) => {
+          const categoryName = txn.categories[0].name;
+          if (!totalAmountByCategory[categoryName])
+            totalAmountByCategory[categoryName] = 0;
+          totalAmountByCategory[categoryName] +=
+            Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1);
+        });
+
+        for (const category in totalAmountByCategory) {
+          totalAmountByCategory[category] =
+            totalAmountByCategory[category].toFixed(2);
+        }
+
+        resBody.totalAmountByCategory = totalAmountByCategory;
+      }
+
+      res.json(resBody);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, show, update, destroy, calcTotal };
 }

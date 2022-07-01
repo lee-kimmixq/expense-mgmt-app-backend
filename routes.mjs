@@ -14,6 +14,7 @@ export default function routes(app) {
   const TransactionController = initTransactionController(db);
   app.get("/transactions", auth(), TransactionController.index);
   app.post("/transactions", auth(), TransactionController.create);
+  app.get("/transactions/total", auth(), TransactionController.calcTotal);
   app.get("/transactions/:id", auth(), TransactionController.show);
   app.put("/transactions/:id", auth(), TransactionController.update);
   app.delete("/transactions/:id", auth(), TransactionController.destroy);
