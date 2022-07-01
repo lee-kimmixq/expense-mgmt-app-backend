@@ -13,6 +13,7 @@ export default function initTransactionController(db) {
         isIncome,
         amountMin,
         amountMax,
+        category,
       } = req.query;
 
       // default options
@@ -37,6 +38,18 @@ export default function initTransactionController(db) {
             attributes: ["id", "name", "isIncome"],
             through: { attributes: [] },
           }; // if "category" was removed, add include clause into options
+      }
+
+      if (category) {
+        if (Array.isArray(category)) {
+          options.include.where = {
+            [Op.or]: category.map((cty) => {
+              return { id: cty };
+            }),
+          };
+        } else {
+          options.include.where = { id: category };
+        }
       }
 
       if (sort) options.order = [sort.split(":")];
