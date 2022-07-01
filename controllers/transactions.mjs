@@ -39,7 +39,9 @@ export default function initTransactionController(db) {
 
       if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
 
-      if (isIncome !== null) options.include.where = { isIncome };
+      if (isIncome !== undefined) options.include.where = { isIncome };
+
+      console.log(options);
 
       const transactions = await db.Transaction.findAll(options);
 
