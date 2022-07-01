@@ -49,9 +49,30 @@ export default function initUserController(db) {
     res.send({ logout: true });
   };
 
-  return {
-    login,
-    signup,
-    logout,
+  const show = async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { fields } = req.query;
+
+      const options = {
+        attributes: ["username", "email", "contact", "filename"],
+      };
+
+      if (fields) {
+        if (Array.isArray(fields)) {
+          options.attributes = fields;
+        } else {
+          options.attributes = [fields];
+        }
+      }
+
+      const user = await db.User.findByPk(id, options);
+
+      res.json({ user });
+    } catch (err) {
+      res.status(500).send(err);
+    }
   };
+
+  return { login, signup, logout, show };
 }
