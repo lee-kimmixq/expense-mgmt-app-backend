@@ -155,12 +155,14 @@ export default function initTransactionController(db) {
 
       const transactions = await db.Transaction.findAll(options);
 
-      const totalAmount = transactions.reduce(
-        (sum, txn) =>
-          Number(sum) +
-          Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1),
-        0
-      );
+      const totalAmount = transactions
+        .reduce(
+          (sum, txn) =>
+            Number(sum) +
+            Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1),
+          0
+        )
+        .toFixed(2);
 
       const resBody = { totalAmount };
 
@@ -173,6 +175,12 @@ export default function initTransactionController(db) {
           totalAmountByCategory[categoryName] +=
             Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1);
         });
+
+        for (const category in totalAmountByCategory) {
+          totalAmountByCategory[category] =
+            totalAmountByCategory[category].toFixed(2);
+        }
+
         resBody.totalAmountByCategory = totalAmountByCategory;
       }
 
