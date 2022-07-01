@@ -134,5 +134,41 @@ export default function initTransactionController(db) {
     }
   };
 
-  return { index, create, show, update, destroy };
+  const calcTotal = async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { txnDateMin, txnDateMax } = req.query;
+
+      const options = {
+        where: { userId: id },
+        attributes: ["amount", "txnDate"],
+        include: {
+          model: db.Category,
+          attributes: ["id", "name", "isIncome"],
+          through: { attributes: [] },
+        },
+      };
+
+      if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
+
+      if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+
+      console.log(options);
+
+      const transactions = await db.Transaction.findAll(options);
+
+      const totalAmount = transactions.reduce(
+        (sum, txn) =>
+          Number(sum) +
+          Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1),
+        0
+      );
+
+      res.json({ totalAmount });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, show, update, destroy, calcTotal };
 }
