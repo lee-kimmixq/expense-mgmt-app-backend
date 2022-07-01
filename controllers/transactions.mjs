@@ -4,8 +4,16 @@ export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id } = req.user;
-      const { fields, sort, limit, txnDateMin, txnDateMax, isIncome } =
-        req.query;
+      const {
+        fields,
+        sort,
+        limit,
+        txnDateMin,
+        txnDateMax,
+        isIncome,
+        amountMin,
+        amountMax,
+      } = req.query;
 
       // default options
       const options = {
@@ -38,6 +46,10 @@ export default function initTransactionController(db) {
       if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
 
       if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+
+      if (amountMax) options.where.amount = { [Op.lt]: amountMax };
+
+      if (amountMin) options.where.amount = { [Op.gt]: amountMin };
 
       if (isIncome !== undefined) options.include.where = { isIncome };
 
