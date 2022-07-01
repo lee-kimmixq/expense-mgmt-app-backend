@@ -66,8 +66,6 @@ export default function initTransactionController(db) {
 
       if (isIncome !== undefined) options.include.where = { isIncome };
 
-      console.log(options);
-
       const transactions = await db.Transaction.findAll(options);
 
       res.json({ transactions });
