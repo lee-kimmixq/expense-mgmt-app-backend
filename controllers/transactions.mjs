@@ -137,7 +137,7 @@ export default function initTransactionController(db) {
   const calcTotal = async (req, res) => {
     try {
       const { id } = req.user;
-      const { txnDateMin, txnDateMax } = req.query;
+      const { txnDateMin, txnDateMax, categoryBreakdown } = req.query;
 
       const options = {
         where: { userId: id },
@@ -153,8 +153,6 @@ export default function initTransactionController(db) {
 
       if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
 
-      console.log(options);
-
       const transactions = await db.Transaction.findAll(options);
 
       const totalAmount = transactions.reduce(
@@ -164,7 +162,21 @@ export default function initTransactionController(db) {
         0
       );
 
-      res.json({ totalAmount });
+      const resBody = { totalAmount };
+
+      if (categoryBreakdown) {
+        const totalAmountByCategory = {};
+        transactions.forEach((txn) => {
+          const categoryName = txn.categories[0].name;
+          if (!totalAmountByCategory[categoryName])
+            totalAmountByCategory[categoryName] = 0;
+          totalAmountByCategory[categoryName] +=
+            Number(txn.amount) * (txn.categories[0].isIncome ? -1 : 1);
+        });
+        resBody.totalAmountByCategory = totalAmountByCategory;
+      }
+
+      res.json(resBody);
     } catch (err) {
       res.status(500).send(err);
     }
