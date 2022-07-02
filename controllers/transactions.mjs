@@ -15,6 +15,8 @@ export default function initTransactionController(db) {
         amountMax,
         category,
         includeUser,
+        includeTotal,
+        includeBreakdown,
       } = req.query;
 
       // default options
@@ -72,6 +74,31 @@ export default function initTransactionController(db) {
       const resBody = { transactions };
 
       if (includeUser) resBody.user = username;
+
+      if (includeTotal) {
+        const totalAmount = transactions
+          .reduce((sum, txn) => Number(sum) + Number(txn.amount), 0)
+          .toFixed(2);
+
+        resBody.totalAmount = totalAmount;
+      }
+
+      if (includeBreakdown) {
+        const totalAmountByCategory = {};
+        transactions.forEach((txn) => {
+          const categoryName = txn.categories[0].name;
+          if (!totalAmountByCategory[categoryName])
+            totalAmountByCategory[categoryName] = 0;
+          totalAmountByCategory[categoryName] += Number(txn.amount);
+        });
+
+        for (const category in totalAmountByCategory) {
+          totalAmountByCategory[category] =
+            totalAmountByCategory[category].toFixed(2);
+        }
+
+        resBody.totalAmountByCategory = totalAmountByCategory;
+      }
 
       res.json(resBody);
     } catch (err) {
