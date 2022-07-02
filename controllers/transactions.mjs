@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
-      const { id } = req.user;
+      const { id, username } = req.user;
       const {
         fields,
         sort,
@@ -14,6 +14,7 @@ export default function initTransactionController(db) {
         amountMin,
         amountMax,
         category,
+        includeUser,
       } = req.query;
 
       // default options
@@ -68,7 +69,11 @@ export default function initTransactionController(db) {
 
       const transactions = await db.Transaction.findAll(options);
 
-      res.json({ transactions });
+      const resBody = { transactions };
+
+      if (includeUser) resBody.user = username;
+
+      res.json(resBody);
     } catch (err) {
       res.status(500).send(err);
     }
