@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import getTotalAmount from "../utils/getTotalAmount.js";
 
 export default function initTransactionController(db) {
   const index = async (req, res) => {
@@ -75,13 +76,7 @@ export default function initTransactionController(db) {
 
       if (includeUser) resBody.user = username;
 
-      if (includeTotal) {
-        const totalAmount = transactions
-          .reduce((sum, txn) => Number(sum) + Number(txn.amount), 0)
-          .toFixed(2);
-
-        resBody.totalAmount = totalAmount;
-      }
+      if (includeTotal) resBody.totalAmount = getTotalAmount(transactions);
 
       if (includeBreakdown) {
         const totalAmountByCategory = {};
