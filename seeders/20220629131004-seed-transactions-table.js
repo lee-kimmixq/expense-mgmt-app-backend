@@ -104,7 +104,7 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete("transactions", null);
     await queryInterface.bulkDelete("transaction_categories", null);
+    await queryInterface.bulkDelete("transactions", null);
   },
 };
