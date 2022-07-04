@@ -5,16 +5,16 @@ module.exports = {
     const transactionsArray = [];
     const transactionCategoriesArray = [];
 
-    for (let i = 1; i <= 100; i += 1) {
+    for (let i = 31; i <= 55; i += 1) {
       // shopping
-      if (i <= 10) {
+      if (i <= 40) {
         transactionsArray.push({
-          user_id: Math.ceil(Math.random() * 2),
+          user_id: 1,
           title: faker.commerce.productName(),
           amount: faker.finance.amount(1, 100),
           txn_date: faker.date.between(
-            "2022-01-01T00:00:00.000Z",
-            "2022-06-30T00:00:00.000Z"
+            "2022-07-01T00:00:00.000Z",
+            "2022-07-06T00:00:00.000Z"
           ),
           created_at: new Date(),
           updated_at: new Date(),
@@ -29,14 +29,14 @@ module.exports = {
       }
 
       // taxi
-      else if (i <= 20) {
+      else if (i <= 50) {
         transactionsArray.push({
-          user_id: Math.ceil(Math.random() * 2),
+          user_id: 1,
           title: `${faker.address.buildingNumber()} ${faker.address.street()}`,
           amount: faker.finance.amount(1, 100),
           txn_date: faker.date.between(
-            "2022-01-01T00:00:00.000Z",
-            "2022-06-30T00:00:00.000Z"
+            "2022-07-01T00:00:00.000Z",
+            "2022-07-06T00:00:00.000Z"
           ),
           created_at: new Date(),
           updated_at: new Date(),
@@ -51,14 +51,14 @@ module.exports = {
       }
 
       // income
-      else if (i <= 25) {
+      else if (i <= 51) {
         transactionsArray.push({
-          user_id: Math.ceil(Math.random() * 2),
+          user_id: 1,
           title: "Salary",
-          amount: 4800,
+          amount: 2500,
           txn_date: faker.date.between(
-            "2022-01-01T00:00:00.000Z",
-            "2022-06-30T00:00:00.000Z"
+            "2022-07-01T00:00:00.000Z",
+            "2022-07-06T00:00:00.000Z"
           ),
           created_at: new Date(),
           updated_at: new Date(),
@@ -73,14 +73,14 @@ module.exports = {
       }
 
       // investments
-      else if (i <= 30) {
+      else {
         transactionsArray.push({
-          user_id: Math.ceil(Math.random() * 2),
+          user_id: 1,
           title: "Stock Returns",
-          amount: faker.finance.amount(200, 500),
+          amount: faker.finance.amount(50, 200),
           txn_date: faker.date.between(
-            "2022-01-01T00:00:00.000Z",
-            "2022-06-30T00:00:00.000Z"
+            "2022-07-01T00:00:00.000Z",
+            "2022-07-06T00:00:00.000Z"
           ),
           created_at: new Date(),
           updated_at: new Date(),
