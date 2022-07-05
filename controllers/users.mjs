@@ -49,5 +49,9 @@ export default function initUserController(db) {
     res.send({ logout: true });
   };
 
-  return { login, signup, logout };
+  const checkAuth = async (req, res) => {
+    res.send({ auth: true });
+  };
+
+  return { login, signup, logout, checkAuth };
 }
