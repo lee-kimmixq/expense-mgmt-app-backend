@@ -61,13 +61,23 @@ export default function initTransactionController(db) {
 
       if (limit) options.limit = limit;
 
-      if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
+      if (txnDateMax && txnDateMin) {
+        options.where.txnDate = {
+          [Op.and]: { [Op.lt]: txnDateMax, [Op.gt]: txnDateMin },
+        };
+      } else {
+        if (txnDateMax) options.where.txnDate = { [Op.lt]: txnDateMax };
+        if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
+      }
 
-      if (txnDateMin) options.where.txnDate = { [Op.gt]: txnDateMin };
-
-      if (amountMax) options.where.amount = { [Op.lt]: amountMax };
-
-      if (amountMin) options.where.amount = { [Op.gt]: amountMin };
+      if (amountMax && amountMin) {
+        options.where.amount = {
+          [Op.and]: { [Op.lt]: amountMax, [Op.gt]: amountMin },
+        };
+      } else {
+        if (amountMax) options.where.amount = { [Op.lt]: amountMax };
+        if (amountMin) options.where.amount = { [Op.gt]: amountMin };
+      }
 
       if (isIncome !== undefined) options.include.where = { isIncome };
 
