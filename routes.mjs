@@ -10,6 +10,7 @@ export default function routes(app) {
   app.post("/login", UserController.login);
   app.post("/signup", UserController.signup);
   app.delete("/logout", UserController.logout);
+  app.get("/checkAuth", auth(), UserController.checkAuth);
 
   const TransactionController = initTransactionController(db);
   app.get("/transactions", auth(), TransactionController.index);
