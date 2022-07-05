@@ -11,3 +11,5 @@ Frontend repo can be accessed [here](https://github.com/lee-kimmixq/expense-mgmt
 2. Install all npm packages `npm i`
 3. Run server `npm run watch`
 4. Initiate database `npx sequelize db:create` - should create db under correct username
+5. Run migrations `npx sequelize db:migrate`
+6. Seed data `db:seed:all`
