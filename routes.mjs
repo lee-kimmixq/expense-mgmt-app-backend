@@ -1,26 +1,15 @@
-import { resolve } from "path";
 import db from "./models/index.mjs";
-import auth from "./middleware/auth.js";
+
+import userRouter from "./routers/userRouter.mjs";
+import transactionRouter from "./routers/transactionRouter.mjs";
 
 import initUserController from "./controllers/users.mjs";
 import initTransactionController from "./controllers/transactions.mjs";
 
 export default function routes(app) {
   const UserController = initUserController(db);
-  app.post("/login", UserController.login);
-  app.post("/signup", UserController.signup);
-  app.delete("/logout", UserController.logout);
-  app.get("/checkAuth", auth(), UserController.checkAuth);
-
   const TransactionController = initTransactionController(db);
-  app.get("/transactions", auth(), TransactionController.index);
-  app.post("/transactions", auth(), TransactionController.create);
-  app.get("/transactions/:id", auth(), TransactionController.show);
-  app.put("/transactions/:id", auth(), TransactionController.update);
-  app.delete("/transactions/:id", auth(), TransactionController.destroy);
 
-  // special JS page. Include the webpack index.html file
-  app.get("/home", (request, response) => {
-    response.sendFile(resolve("dist", "main.html"));
-  });
+  app.use("/users", userRouter(UserController));
+  app.use("/transactions", transactionRouter(TransactionController));
 }

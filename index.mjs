@@ -5,7 +5,7 @@ import methodOverride from "method-override";
 import bindRoutes from "./routes.mjs";
 import cors from "cors";
 import passport from "passport";
-import {} from "./authentication/passport.mjs";
+import {} from "./middleware/passport.mjs";
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
