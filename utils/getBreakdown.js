@@ -1,15 +1,21 @@
 const getBreakdown = (transactions) => {
-  const totalAmountByCategory = {};
+  const amountTally = {};
   transactions.forEach((txn) => {
     const categoryName = txn.categories[0].name;
-    if (!totalAmountByCategory[categoryName])
-      totalAmountByCategory[categoryName] = 0;
-    totalAmountByCategory[categoryName] += Number(txn.amount);
+    if (!amountTally[categoryName]) amountTally[categoryName] = 0;
+    amountTally[categoryName] += Number(txn.amount);
   });
 
-  for (const category in totalAmountByCategory) {
-    totalAmountByCategory[category] =
-      totalAmountByCategory[category].toFixed(2);
+  for (const category in amountTally) {
+    amountTally[category] = amountTally[category].toFixed(2);
+  }
+
+  const totalAmountByCategory = [];
+  for (const category in amountTally) {
+    totalAmountByCategory.push({
+      name: category,
+      total: amountTally[category],
+    });
   }
 
   return totalAmountByCategory;
