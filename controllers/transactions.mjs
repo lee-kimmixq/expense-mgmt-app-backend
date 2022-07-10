@@ -1,33 +1,13 @@
-import { Op } from "sequelize";
-import getBreakdown from "../utils/getBreakdown.js";
-import getTotalAmount from "../utils/getTotalAmount.js";
 import getTxnQueryOptions from "../utils/getTxnQueryOptions.js";
+import getTxnResBody from "../utils/getTxnResBody.js";
 
 export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id, username } = req.user;
-      const {
-        includeUser,
-        includeTotal,
-        includeBreakdown,
-        includeTransactions,
-      } = req.query;
-
       const options = getTxnQueryOptions(db, id, req.query);
-
       const transactions = await db.Transaction.findAll(options);
-
-      const resBody = {};
-
-      if (includeUser) resBody.user = username;
-
-      if (includeTransactions) resBody.transactions = transactions;
-
-      if (includeTotal) resBody.totalAmount = getTotalAmount(transactions);
-
-      if (includeBreakdown) resBody.breakdown = getBreakdown(transactions);
-
+      const resBody = getTxnResBody(transactions, req.query, username);
       res.json(resBody);
     } catch (err) {
       res.status(500).send(err);
