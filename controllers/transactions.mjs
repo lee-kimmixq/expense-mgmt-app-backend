@@ -7,15 +7,22 @@ export default function initTransactionController(db) {
   const index = async (req, res) => {
     try {
       const { id, username } = req.user;
-      const { includeUser, includeTotal, includeBreakdown } = req.query;
+      const {
+        includeUser,
+        includeTotal,
+        includeBreakdown,
+        includeTransactions,
+      } = req.query;
 
       const options = getTxnQueryOptions(db, id, req.query);
 
       const transactions = await db.Transaction.findAll(options);
 
-      const resBody = { transactions };
+      const resBody = {};
 
       if (includeUser) resBody.user = username;
+
+      if (includeTransactions) resBody.transactions = transactions;
 
       if (includeTotal) resBody.totalAmount = getTotalAmount(transactions);
 
