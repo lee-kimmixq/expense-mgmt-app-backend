@@ -13,15 +13,23 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
     category,
   } = queryParams;
 
-  // default options
+  const defaultAttributes = [
+    "id",
+    "title",
+    "amount",
+    "txnDate",
+    "createdAt",
+    "updatedAt",
+  ];
+
+  // default option
   const options = {
     where: { userId },
-    attributes: ["id", "title", "amount", "txnDate", "createdAt", "updatedAt"],
   };
 
   if (fields) {
     const attributes = fields.filter((field) => field !== "category"); // remove "category" from fields
-    if (attributes.length > 0) options.attributes = attributes; // if there are attributes, replace default attributes with specified attributes
+    options.attributes = attributes.length > 0 ? attributes : defaultAttributes; // if there are attributes, replace default attributes with specified attributes
     if (attributes.length !== fields.length)
       options.include = {
         model: db.Category,
