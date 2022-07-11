@@ -101,7 +101,7 @@ export default function initTransactionController(db) {
   const report = async (req, res) => {
     try {
       const { id } = req.user;
-      const { txnDateMin, txnDateMax } = req.query;
+      const { txnDateMin, txnDateMax, group } = req.query;
       const transactions = await db.Transaction.findAll({
         where: {
           userId: id,
@@ -109,7 +109,7 @@ export default function initTransactionController(db) {
         },
         attributes: [
           [
-            sequelize.fn("date_trunc", "day", sequelize.col("txn_date")),
+            sequelize.fn("date_trunc", group, sequelize.col("txn_date")),
             "date",
           ],
           sequelize.fn("sum", sequelize.col("amount")),
