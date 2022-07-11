@@ -28,6 +28,7 @@ export default function initTransactionController(db) {
         amount,
         txnDate,
         title,
+        imageUrl: req.file ? req.file.location : null,
       });
 
       res.json({ newTxn });
