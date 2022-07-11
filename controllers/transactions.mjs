@@ -1,5 +1,6 @@
 import getTxnQueryOptions from "../utils/getTxnQueryOptions.js";
 import getTxnResBody from "../utils/getTxnResBody.js";
+import sequelize, { Op } from "sequelize";
 
 export default function initTransactionController(db) {
   const index = async (req, res) => {
@@ -97,5 +98,37 @@ export default function initTransactionController(db) {
     }
   };
 
-  return { index, create, show, update, destroy };
+  const report = async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { txnDateMin, txnDateMax } = req.query;
+      const transactions = await db.Transaction.findAll({
+        where: {
+          userId: id,
+          txnDate: { [Op.and]: { [Op.lt]: txnDateMax, [Op.gt]: txnDateMin } },
+        },
+        attributes: [
+          [
+            sequelize.fn("date_trunc", "day", sequelize.col("txn_date")),
+            "date",
+          ],
+          sequelize.fn("sum", sequelize.col("amount")),
+        ],
+        group: ["date"],
+        order: sequelize.literal("date ASC"),
+        include: {
+          model: db.Category,
+          attributes: [],
+          through: { attributes: [] },
+          where: { isIncome: false },
+        },
+        raw: true,
+      });
+      res.json(transactions);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, show, update, destroy, report };
 }
