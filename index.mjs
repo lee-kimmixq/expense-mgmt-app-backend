@@ -7,10 +7,6 @@ import cors from "cors";
 import passport from "passport";
 import {} from "./middleware/passport.mjs";
 
-import multer from "multer";
-import aws from "aws-sdk";
-import multerS3 from "multer-s3";
-
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 dotenv.config();
@@ -45,22 +41,3 @@ bindRoutes(app);
 // Set Express to listen on the given port
 const PORT = process.env.PORT || 3004;
 app.listen(PORT);
-
-const s3 = new aws.S3({
-  accessKeyId: process.env.ACCESS_KEY_ID,
-  secretAccessKey: process.env.SECRET_ACCESS_KEY,
-});
-
-const multerUpload = multer({
-  storage: multerS3({
-    s3,
-    bucket: "make-cents-bucket",
-    acl: "public-read",
-    metadata: (request, file, callback) => {
-      callback(null, { fieldName: file.fieldname });
-    },
-    key: (request, file, callback) => {
-      callback(null, Date.now().toString());
-    },
-  }),
-});
