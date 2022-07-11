@@ -1,6 +1,6 @@
 import express from "express";
 import auth from "../utils/auth.js";
-import multerUpload from "../utils/s3.js";
+import multerUpload from "../middleware/s3.js";
 
 const router = express.Router();
 
