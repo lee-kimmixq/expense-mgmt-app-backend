@@ -41,5 +41,22 @@ export default function initBudgetController(db) {
     }
   };
 
-  return { index };
+  const create = async (req, res) => {
+    try {
+      const { id } = req.user;
+      const { categoryId, amount } = req.body;
+
+      const newBudget = await db.Budget.create({
+        userId: id,
+        categoryId,
+        amount,
+      });
+
+      res.json({ newBudget });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create };
 }
