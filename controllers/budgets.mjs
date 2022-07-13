@@ -22,6 +22,7 @@ export default function initBudgetController(db) {
           ],
           "id",
           "amount",
+          "showInDashboard",
         ],
         include: {
           model: db.Category,
@@ -58,5 +59,31 @@ export default function initBudgetController(db) {
     }
   };
 
-  return { index, create };
+  const update = async (req, res) => {
+    try {
+      const { id: userId } = req.user;
+      const { id: budgetId } = req.params;
+      const { showInDashboard } = req.body;
+      console.log(showInDashboard, typeof showInDashboard);
+
+      const budget = await db.Budget.findByPk(budgetId);
+      if (!budget) return res.status(400).send("Bad Request");
+      if (userId !== budget.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
+
+      if (showInDashboard === "true") {
+        const numPinned = await db.Budget.count({
+          where: { userId, showInDashboard: true },
+        });
+        if (numPinned >= 3) return res.json({ update: false });
+      }
+
+      await budget.update({ showInDashboard, updatedAt: new Date() });
+
+      res.json({ update: true });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, update };
 }
