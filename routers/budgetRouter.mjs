@@ -7,6 +7,7 @@ export default function budgetRouter(controller) {
   router.get("/", auth, controller.index);
   router.post("/", auth, controller.create);
   router.put("/:id", auth, controller.update);
+  router.post("/:id", auth, controller.deactivate);
 
   return router;
 }

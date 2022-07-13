@@ -14,6 +14,9 @@ export default function initBudgetController(db) {
               `(SELECT MAX(id) FROM budgets GROUP BY category_id)`
             ),
           },
+          amount: {
+            [Op.gt]: 0,
+          },
         },
         attributes: [
           [
@@ -64,7 +67,6 @@ export default function initBudgetController(db) {
       const { id: userId } = req.user;
       const { id: budgetId } = req.params;
       const { showInDashboard } = req.body;
-      console.log(showInDashboard, typeof showInDashboard);
 
       const budget = await db.Budget.findByPk(budgetId);
       if (!budget) return res.status(400).send("Bad Request");
@@ -85,5 +87,27 @@ export default function initBudgetController(db) {
     }
   };
 
-  return { index, create, update };
+  const deactivate = async (req, res) => {
+    try {
+      const { id: userId } = req.user;
+      const { id: budgetId } = req.params;
+
+      const budget = await db.Budget.findByPk(budgetId);
+      if (!budget) return res.status(400).send("Bad Request");
+      if (userId !== budget.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
+
+      const newBlankBudget = await db.Budget.create({
+        userId,
+        categoryId: budget.categoryId,
+        amount: 0,
+        showInDashboard: false,
+      });
+
+      res.json({ deactivate: true, newBlankBudget });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { index, create, update, deactivate };
 }
