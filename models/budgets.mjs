@@ -31,6 +31,7 @@ export default function initBudgetModel(sequelize, DataTypes) {
       showInDashboard: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,
