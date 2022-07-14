@@ -68,13 +68,18 @@ export default function initTransactionController(db) {
 
       if (txn.categoryId !== categoryId) await txn.setCategories([categoryId]);
 
-      await txn.update({
-        amount,
-        txnDate,
-        title,
-        imageUrl: req.file ? req.file.location : null,
-        updatedAt: new Date(),
-      });
+      const getFieldsToUpdate = () => {
+        const fields = {
+          amount,
+          txnDate,
+          title,
+          updatedAt: new Date(),
+        };
+        if (req.file) fields.imageUrl = req.file.location;
+        return fields;
+      };
+
+      await txn.update(getFieldsToUpdate());
 
       res.json({ success: true });
     } catch (err) {
