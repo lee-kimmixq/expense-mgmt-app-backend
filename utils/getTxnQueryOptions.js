@@ -18,6 +18,7 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
     "title",
     "amount",
     "txnDate",
+    "imageUrl",
     "createdAt",
     "updatedAt",
   ];
