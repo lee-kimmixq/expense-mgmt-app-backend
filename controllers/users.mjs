@@ -12,6 +12,12 @@ export default function initUserController(db) {
         return;
       }
 
+      if (user.status != "Active") {
+        return res.status(401).send({
+          message: "Please check your inbox to confirm your account.",
+        });
+      };
+
       if (user.password !== getHash(password)) {
         res.status(401).send("Wrong username or password");
         return;
@@ -32,10 +38,12 @@ export default function initUserController(db) {
     try {
       const { username, email, contact, password } = req.body;
       const hashedPassword = getHash(password);
+      const confirmationCode = getHash(email);
       await db.User.create({
         username,
         email,
         contact,
+        confirmationCode,
         password: hashedPassword,
       });
       res.send({ signup: true });
