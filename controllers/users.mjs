@@ -47,6 +47,11 @@ export default function initUserController(db) {
         password: hashedPassword,
       });
       res.send({ signup: true });
+      nodemailer.sendConfirmationEmail(
+        username,
+        email,
+        confirmationCode
+      )
     } catch (err) {
       res.status(500).send(err);
     }
