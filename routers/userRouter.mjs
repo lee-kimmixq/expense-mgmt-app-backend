@@ -8,6 +8,7 @@ export default function userRouter(controller) {
   router.post("/signup", controller.signup);
   router.delete("/logout", controller.logout);
   router.get("/checkAuth", auth, controller.checkAuth);
+  router.get("/confirm:confirmationCode", controller.verifyUser)
 
   return router;
 }

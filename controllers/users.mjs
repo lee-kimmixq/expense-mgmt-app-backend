@@ -66,5 +66,24 @@ export default function initUserController(db) {
     res.send({ auth: true });
   };
 
-  return { login, signup, logout, checkAuth };
+  const verifyUser = async (req, res, next) => {
+    try {
+      const { confirmationCode } = req.params;
+      const user = await db.User.findOne({ where: { confirmationCode } });
+
+      if (!user) {
+        res.status(404).send("User not found");
+        return;
+      };
+
+      await user.update({ status: "Active", updatedAt: new Date() });
+      console.log('confirm success')  
+
+      res.send({ verified: true });
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  };
+
+  return { login, signup, logout, checkAuth, verifyUser };
 }
