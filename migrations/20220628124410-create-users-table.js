@@ -26,6 +26,14 @@ module.exports = {
       filename: {
         type: Sequelize.STRING,
       },
+      status: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        defaultValue: 'Pending'
+      },
+      confirmation_code: {
+        type: Sequelize.STRING,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

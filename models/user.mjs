@@ -27,6 +27,14 @@ export default function initUserModel(sequelize, DataTypes) {
       filename: {
         type: DataTypes.STRING,
       },
+      status: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        defaultValue: 'Pending'
+      },
+      confirmationCode: {
+        type: DataTypes.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
