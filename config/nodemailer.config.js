@@ -1,34 +1,9 @@
 const nodemailer = require("nodemailer");
-// const { google } = require('googleapis');
+const dotenv = require("dotenv");
 
-// const user = process.env.USER;
-// const pass = process.env.PASS;
-// const clientId = process.env.CLIENT_ID;
-// const clientSecret = process.env.CLIENT_SECRET;
-// const refreshToken = process.env.REFRESH_TOKEN;
-// const redirectUri = process.env.REDIRECT_URI;
-// const accessToken = process.env.ACCESS_TOKEN;
-
-// const transport = nodemailer.createTransport({
-//   // host: 'smtp.gmail.com',
-//     service: "gmail",
-//     // port: 465,
-//     // secure: true,
-//     auth: {
-//         type: 'OAuth2',
-//         user,
-//         // pass,
-//         clientId,
-//         clientSecret,
-//         refreshToken,
-//         // accessToken
-//     }
-//   // service: "Gmail",
-//   // auth: {
-//   //   user: user,
-//   //   pass: pass,
-//   // },
-// });
+dotenv.config();
+const user = process.env.USER;
+const pass = process.env.PASS;
 
 const mailConfig = {
   host: 'smtp.ethereal.email',
@@ -39,40 +14,23 @@ const mailConfig = {
   }
 };
 
-
 const sendConfirmationEmail = async (name, email, confirmationCode) => {
 
-  // const user = process.env.USER;
-  // // const pass = process.env.PASS;
-  // const CLIENT_ID = process.env.CLIENT_ID;
-  // const CLIENT_SECRET = process.env.CLIENT_SECRET;
-  // const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-  // const REDIRECT_URI = process.env.REDIRECT_URI;
-  // // const accessToken = process.env.ACCESS_TOKEN;
-
-  // const OAuth2Client = new google.auth.OAuth2(
-  //   CLIENT_ID,
-  //   CLIENT_SECRET,
-  //   REDIRECT_URI,
-  // );
-
-  // OAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
   try {
-    // Generate the accessToken on the fly
-    // const accessToken = await OAuth2Client.getAccessToken();
-
     const transport = nodemailer.createTransport(mailConfig);
 
     const mailOptions = {
       from: 'no-reply@makecents.com',
       to: email,
       subject: "Please confirm your account",
-      html: `<h1>Email Confirmation</h1>
-          <h2>Hello ${name}</h2>
-          <p>Thank you for signing up. Please confirm your email by clicking on the following link</p>
-          <a href=http://localhost:3000/confirm/${confirmationCode}> Click here</a>
-          </div>`,
+      html:
+        `<div style="background: rgba(1, 0, 6, 0.8); padding: 50px">
+          <p style="color: #B4B4B4"> ❤ Make Cents</p>    
+          <h1 style="color: #efefef">Verify your email</h1>
+          <p style="color: #efefef">Hello ${name}!</p>
+          <p style="color: #efefef; ">Click the button below to confirm your account<br>and start enjoying Make Cents.</p>
+          <button style="margin-top: 1.5em; background-color: #5948D3; color: #efefef; height: 3em; width: 9em; border-style: none; border-radius: 0.5em" ><a href=http://localhost:3000/confirm/${confirmationCode} style="text-decoration: none; color: #efefef">Click here</a></button>
+        </div>`,
       };
 
     // Set up the email options and delivering it
