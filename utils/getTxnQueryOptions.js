@@ -40,15 +40,11 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
   }
 
   if (category) {
-    if (Array.isArray(category)) {
-      options.include.where = {
-        [Op.or]: category.map((cty) => {
-          return { id: cty };
-        }),
-      };
-    } else {
-      options.include.where = { id: category };
-    }
+    options.include.where = {
+      [Op.or]: JSON.parse(decodeURI(category)).map((cty) => {
+        return { id: cty };
+      }),
+    };
   }
 
   if (sort) options.order = [sort.split(":")];
