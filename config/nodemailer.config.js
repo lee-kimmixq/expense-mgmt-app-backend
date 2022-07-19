@@ -24,12 +24,12 @@ const sendConfirmationEmail = async (name, email, confirmationCode) => {
       to: email,
       subject: "Please confirm your account",
       html:
-        `<div>
-          <h1>Verify your email</h1>
-          <p>Hello ${name}!</p>
-          <p>You're almost ready to start enjoying Make Cents.</p>
-          <p>Click the button below to confirm your account.</p>
-          <a href=http://localhost:3000/confirm/${confirmationCode}> Click here</a>
+        `<div style="background: rgba(1, 0, 6, 0.8); padding: 50px">
+          <p style="color: #B4B4B4"> ❤ Make Cents</p>    
+          <h1 style="color: #efefef">Verify your email</h1>
+          <p style="color: #efefef">Hello ${name}!</p>
+          <p style="color: #efefef; ">Click the button below to confirm your account<br>and start enjoying Make Cents.</p>
+          <button style="margin-top: 1.5em; background-color: #5948D3; color: #efefef; height: 3em; width: 9em; border-style: none; border-radius: 0.5em" ><a href=http://localhost:3000/confirm/${confirmationCode} style="text-decoration: none; color: #efefef">Click here</a></button>
         </div>`,
       };
 
