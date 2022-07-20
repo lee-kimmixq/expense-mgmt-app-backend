@@ -55,7 +55,6 @@ export default function initUserController(db) {
         confirmationCode
       );
 
-      console.log('message sent', response);
       res.send({ signup: true });
       
     } catch (err) {
@@ -72,7 +71,6 @@ export default function initUserController(db) {
   const verifyUser = async (req, res) => {
     try {
       const { confirmationCode } = req.params;
-      console.log(confirmationCode);
       const user = await db.User.findOne({ where: { confirmationCode } });
 
       if (!user) {
@@ -82,7 +80,6 @@ export default function initUserController(db) {
       };
 
       await user.update({ status: "Active", updatedAt: new Date() });
-      console.log('confirm success')  
 
       res.send({ verified: true });
       console.log(res);
