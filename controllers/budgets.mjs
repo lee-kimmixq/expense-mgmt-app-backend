@@ -114,10 +114,39 @@ export default function initBudgetController(db) {
       if (userId !== budget.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
 
       if (showInDashboard === true) {
-        const numPinned = await db.Budget.count({
-          where: { userId, showInDashboard: true },
-        });
-        if (numPinned >= 3) return res.json({ update: false });
+        const options = {
+          where: {
+            userId,
+            id: {
+              [Op.in]: sequelize.literal(
+                `(SELECT MAX(id) FROM budgets GROUP BY category_id)`
+              ),
+            },
+            amount: {
+              [Op.gt]: 0,
+            },
+            showInDashboard: true,
+          },
+          attributes: [
+            [
+              sequelize.fn("DISTINCT", sequelize.col("category_id")),
+              "categoryId",
+            ],
+            "id",
+            "amount",
+            "showInDashboard",
+          ],
+          include: {
+            model: db.Category,
+            attributes: ["name"],
+            where: { isIncome: false },
+          },
+          raw: true,
+        };
+
+        const budgets = await db.Budget.findAll(options);
+
+        if (budgets.length >= 3) return res.json({ update: false });
       }
 
       await budget.update({ showInDashboard, updatedAt: new Date() });
