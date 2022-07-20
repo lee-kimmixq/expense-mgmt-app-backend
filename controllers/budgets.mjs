@@ -1,4 +1,5 @@
 import sequelize, { Op } from "sequelize";
+import getBreakdown from "../utils/getBreakdown.js";
 
 export default function initBudgetController(db) {
   const index = async (req, res) => {
@@ -39,7 +40,47 @@ export default function initBudgetController(db) {
 
       const budgets = await db.Budget.findAll(options);
 
-      res.json({ budgets });
+      const categoryIdArr = budgets.map((budget) => {
+        return { id: budget.categoryId };
+      });
+      const date = new Date();
+      const txnDateMin = new Date(date.getFullYear(), date.getMonth(), 1);
+      const txnDateMax = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      txnDateMin.setHours(0, 0, 0, 0);
+      txnDateMax.setHours(23, 59, 59, 999);
+
+      const txnQueryOptions = {
+        where: {
+          userId: id,
+          txnDate: {
+            [Op.and]: { [Op.lt]: txnDateMax, [Op.gt]: txnDateMin },
+          },
+        },
+        attributes: ["id", "title", "amount", "txnDate"],
+        include: {
+          model: db.Category,
+          attributes: ["id", "name", "isIncome"],
+          through: { attributes: [] },
+          where: { [Op.or]: categoryIdArr },
+        },
+      };
+
+      const transactions = await db.Transaction.findAll(txnQueryOptions);
+      const breakdown = getBreakdown(transactions);
+
+      const budgetsWithTotalAmt = budgets.map((budget) => {
+        const filterResults = breakdown.filter(
+          (el) => el.name === budget["category.name"]
+        );
+        if (filterResults.length === 0) {
+          budget.total = 0;
+        } else {
+          budget.total = filterResults[0].total;
+        }
+        return budget;
+      });
+
+      res.json({ budgets: budgetsWithTotalAmt });
     } catch (err) {
       res.status(500).send(err);
     }
