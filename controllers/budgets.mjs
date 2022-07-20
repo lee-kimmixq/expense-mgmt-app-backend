@@ -72,7 +72,7 @@ export default function initBudgetController(db) {
       if (!budget) return res.status(400).send("Bad Request");
       if (userId !== budget.userId) return res.status(403).send("Forbidden"); // return forbidden if transaction doesn't belong to current user
 
-      if (showInDashboard === "true") {
+      if (showInDashboard === true) {
         const numPinned = await db.Budget.count({
           where: { userId, showInDashboard: true },
         });
