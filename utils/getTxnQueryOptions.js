@@ -26,6 +26,7 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
   // default option
   const options = {
     where: { userId },
+    order: ["createdAt", "DESC"],
   };
 
   if (fields) {
@@ -47,7 +48,7 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
     };
   }
 
-  if (sort) options.order = [sort.split(":")];
+  if (sort) options.order = [[sort.split(":")], ["createdAt", "DESC"]];
 
   if (limit) options.limit = limit;
 
