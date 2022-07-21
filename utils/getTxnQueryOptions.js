@@ -26,7 +26,6 @@ const getTxnQueryOptions = (db, userId, queryParams) => {
   // default option
   const options = {
     where: { userId },
-    order: ["createdAt", "DESC"],
   };
 
   if (fields) {
