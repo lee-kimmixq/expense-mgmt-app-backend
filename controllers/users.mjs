@@ -2,7 +2,6 @@ import getHash from "../utils/getHash.js";
 import jwt from "jsonwebtoken";
 import sendConfirmationEmail from "../config/nodemailer.config.js";
 
-
 export default function initUserController(db) {
   const login = async (req, res) => {
     try {
@@ -10,7 +9,7 @@ export default function initUserController(db) {
       const user = await db.User.findOne({ where: { email } });
 
       if (!user) {
-        res.status(401).send({message: "Wrong username or password"});
+        res.status(401).send({ message: "Wrong username or password" });
         return;
       }
 
@@ -18,7 +17,7 @@ export default function initUserController(db) {
         return res.status(401).send({
           message: "Please check your inbox to confirm your account.",
         });
-      };
+      }
 
       if (user.password !== getHash(password)) {
         res.status(401).send("Wrong username or password");
@@ -49,16 +48,11 @@ export default function initUserController(db) {
         password: hashedPassword,
       });
 
-      const response = sendConfirmationEmail(
-        username,
-        email,
-        confirmationCode
-      );
+      const response = sendConfirmationEmail(username, email, confirmationCode);
 
       res.send({ signup: true });
-      
     } catch (err) {
-      console.log('error =', err);
+      console.log("error =", err);
       res.status(500).send(err);
     }
   };
@@ -75,9 +69,9 @@ export default function initUserController(db) {
 
       if (!user) {
         res.status(404).send("User not found");
-        console.log('res404', res);
+        console.log("res404", res);
         return;
-      };
+      }
 
       await user.update({ status: "Active", updatedAt: new Date() });
 
@@ -85,7 +79,7 @@ export default function initUserController(db) {
       console.log(res);
     } catch (err) {
       res.status(500).send(err);
-      console.log('error', err)
+      console.log("error", err);
     }
   };
 
@@ -93,5 +87,10 @@ export default function initUserController(db) {
     res.send({ auth: true });
   };
 
-  return { login, signup, logout, verifyUser, checkAuth };
+  const getUsername = async (req, res) => {
+    const { username } = req.user;
+    res.json({ username });
+  };
+
+  return { login, signup, logout, verifyUser, checkAuth, getUsername };
 }
