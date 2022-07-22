@@ -9,7 +9,7 @@ export default function userRouter(controller) {
   router.delete("/logout", controller.logout);
   router.get("/confirm/:confirmationCode", controller.verifyUser);
   router.get("/checkAuth", auth, controller.checkAuth);
-  router.get("/user", auth, controller.getUsername);
+  router.get("/current", auth, controller.getUsername);
 
   return router;
 }
