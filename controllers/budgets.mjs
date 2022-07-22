@@ -91,10 +91,16 @@ export default function initBudgetController(db) {
       const { id } = req.user;
       const { categoryId, amount } = req.body;
 
+      const latestBudget = await db.Budget.findOne({
+        where: { categoryId },
+        sort: [["createdAt", "DESC"]],
+      });
+
       const newBudget = await db.Budget.create({
         userId: id,
         categoryId,
         amount,
+        showInDashboard: latestBudget.showInDashboard,
       });
 
       res.json({ newBudget });
